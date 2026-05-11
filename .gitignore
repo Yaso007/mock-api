@@ -1,0 +1,19 @@
+# dependencies
+node_modules/
+
+# environment variables
+.env
+
+# logs
+*.log
+npm-debug.log*
+
+# Docker volumes / database data
+postgres_data/
+
+# editor files
+.vscode/
+
+# OS files
+.DS_Store
+Thumbs.db
