@@ -1,131 +1,53 @@
-const express = require("express");
-const pool = require("./db");
+require("dotenv").config();
 
-const app = express();
+const fs = require("fs");
 
-app.use(express.json());
+const path = require("path");
 
-const PORT = process.env.PORT || 5000;
+const pool = require("./config/db");
 
-app.get("/", (req, res) => {
-  res.send("API Running");
-});
+const app = require("./app");
 
-
-// Create table
-app.get("/setup", async (req, res) => {
-  try {
-    await pool.query(`
-      CREATE TABLE IF NOT EXISTS users (
-        id SERIAL PRIMARY KEY,
-        name VARCHAR(100),
-        email VARCHAR(100)
-      )
-    `);
-
-    res.send("Users table created");
-  } catch (err) {
-    console.log(err);
-    res.status(500).send("Error");
-  }
-});
+const PORT =
+  process.env.PORT || 5000;
 
 
-// CREATE
-app.post("/users", async (req, res) => {
-  try {
-    const { name, email } = req.body;
+const initializeDatabase =
+  async () => {
 
-    const result = await pool.query(
-      "INSERT INTO users (name, email) VALUES ($1, $2) RETURNING *",
-      [name, email]
+    try {
+
+      const sql = fs.readFileSync(
+        path.join(
+          __dirname,
+          "sql",
+          "schema.sql"
+        ),
+        "utf8"
+      );
+
+      await pool.query(sql);
+
+      console.log(
+        "Database initialized"
+      );
+
+    } catch (err) {
+
+      console.log(err);
+    }
+  };
+
+
+app.listen(
+  PORT,
+  "0.0.0.0",
+  async () => {
+
+    await initializeDatabase();
+
+    console.log(
+      `Server running on ${PORT}`
     );
-
-    res.json(result.rows[0]);
-
-  } catch (err) {
-    console.log(err);
-    res.status(500).send("Error");
   }
-});
-
-
-// READ ALL
-app.get("/users", async (req, res) => {
-  try {
-    const result = await pool.query(
-      "SELECT * FROM users ORDER BY id ASC"
-    );
-
-    res.json(result.rows);
-
-  } catch (err) {
-    console.log(err);
-    res.status(500).send("Error");
-  }
-});
-
-
-// READ ONE
-app.get("/users/:id", async (req, res) => {
-  try {
-    const result = await pool.query(
-      "SELECT * FROM users WHERE id = $1",
-      [req.params.id]
-    );
-
-    res.json(result.rows[0]);
-
-  } catch (err) {
-    console.log(err);
-    res.status(500).send("Error");
-  }
-});
-
-
-// UPDATE
-app.put("/users/:id", async (req, res) => {
-  try {
-    const { name, email } = req.body;
-
-    const result = await pool.query(
-      `
-      UPDATE users
-      SET name = $1, email = $2
-      WHERE id = $3
-      RETURNING *
-      `,
-      [name, email, req.params.id]
-    );
-
-    res.json(result.rows[0]);
-
-  } catch (err) {
-    console.log(err);
-    res.status(500).send("Error");
-  }
-});
-
-
-// DELETE
-app.delete("/users/:id", async (req, res) => {
-  try {
-    await pool.query(
-      "DELETE FROM users WHERE id = $1",
-      [req.params.id]
-    );
-
-    res.json({
-      message: "User deleted"
-    });
-
-  } catch (err) {
-    console.log(err);
-    res.status(500).send("Error");
-  }
-});
-
-
-app.listen(PORT, "0.0.0.0", () => {
-  console.log(`Server running on port ${PORT}`);
-});
+);
