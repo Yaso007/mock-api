@@ -5,6 +5,9 @@ const authRoutes = require("./routes/authRoutes");
 const firRoutes = require("./routes/firRoutes");
 
 const app = express();
+app.get("/", (req, res) => {
+  res.send("Hello, World!");
+});
 
 app.use(express.json());
 
