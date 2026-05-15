@@ -2,9 +2,12 @@ services:
   app:
     build: .
     container_name: crud_node_app
+
     restart: always
+
     ports:
       - "5000:5000"
+
     environment:
       PORT: 5000
       DB_HOST: postgres_db
@@ -12,23 +15,31 @@ services:
       DB_USER: postgres
       DB_PASSWORD: password
       DB_NAME: crud_db
+
     depends_on:
       - postgres_db
+
+    command: sh -c "npx wait-on tcp:postgres_db:5432 && npm start"
+
     volumes:
       - .:/app
       - /app/node_modules
 
-
   postgres_db:
     image: postgres:16
+
     container_name: crud_postgres
+
     restart: always
+
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
       POSTGRES_DB: crud_db
+
     ports:
       - "5432:5432"
+
     volumes:
       - postgres_data:/var/lib/postgresql/data
 

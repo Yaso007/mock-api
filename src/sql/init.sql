@@ -4,12 +4,12 @@ CREATE TYPE district_enum AS ENUM (
     'Mangan',
     'Gyalshing',
     'Pakyong',
-    'Soreng',   
-)
+    'Soreng'  
+);
 CREATE TYPE display_value AS ENUM (
     'Active',
     'Inactive' 
-)
+);
 
 CREATE TABLE IF NOT EXISTS users (
     id SERIAL PRIMARY KEY,
@@ -36,5 +36,5 @@ CREATE TABLE IF NOT EXISTS fir_registry (
     law_enforcement_type VARCHAR(100),
     display display_value NOT NULL,
     created_by INT REFERENCES users(id),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-) 
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+); 

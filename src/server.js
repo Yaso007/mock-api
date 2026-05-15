@@ -5,6 +5,7 @@ const fs = require("fs");
 const path = require("path");
 
 const pool = require("./config/db");
+const waitForDb = require("./config/retryConnect");
 
 const app = require("./app");
 
@@ -21,7 +22,7 @@ const initializeDatabase =
         path.join(
           __dirname,
           "sql",
-          "schema.sql"
+          "init.sql"
         ),
         "utf8"
       );
@@ -43,6 +44,7 @@ app.listen(
   PORT,
   "0.0.0.0",
   async () => {
+    await waitForDb(pool);
 
     await initializeDatabase();
 
