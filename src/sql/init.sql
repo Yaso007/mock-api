@@ -1,11 +1,18 @@
-CREATE TYPE district_enum AS ENUM (
+
+DO $$
+BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'district_enum') THEN
+   CREATE TYPE district_enum AS ENUM (
     'Gangtok',
     'Namchi',
     'Mangan',
     'Gyalshing',
     'Pakyong',
     'Soreng'  
-);
+    );
+  END IF;
+END $$;
+
 CREATE TYPE display_value AS ENUM (
     'Active',
     'Inactive' 

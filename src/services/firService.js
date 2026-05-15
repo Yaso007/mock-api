@@ -14,7 +14,7 @@ const createFIRRecord = async ({
   district,
   taluk,
   law_enforcement_type,
-  display_status,
+  display,
   created_by,
 }) => {
 
@@ -36,7 +36,7 @@ const createFIRRecord = async ({
       district,
       taluk,
       law_enforcement_type,
-      display_status,
+      display,
       created_by
 
     )
@@ -59,7 +59,7 @@ const createFIRRecord = async ({
       district,
       taluk,
       law_enforcement_type,
-      display_status,
+      display,
       created_by,
     ]
   );
