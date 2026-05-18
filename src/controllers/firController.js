@@ -62,7 +62,35 @@ const getAllFIRs = async (req, res) => {
   }
 };
 
+const getFIR= async (req,res) =>{
+  const record = await getFIRById(req.params.id);
+  if (!record) {
+    return res.status(404).json({ message: "FIR record not found" });
+  }
+  res.json(record);
+}
+
+const updateFIR = async (req, res) =>{
+  const updatedRecord = await updateFIRRecord(req.params.id, req.body);
+  if (!updatedRecord) {
+    return res.status(404).json({ message: "FIR record not found" });
+  }
+  res.json(updatedRecord);
+}
+
+const deleteFIR = async (req, res) =>{
+  const deletedRecord = await deleteFIRRecord(req.params.id);
+  if (!deletedRecord) {
+    return res.status(404).json({ message: "FIR record not found" });
+  }
+  res.json({ message: "FIR record deleted successfully" });
+}
+
 module.exports = {
   createFIR,
   getAllFIRs,
+  getFIR,
+  updateFIR,
+  deleteFIR,
 };
+
